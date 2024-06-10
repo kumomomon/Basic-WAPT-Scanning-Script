@@ -27,11 +27,6 @@ else
 		echo -e "Command: nmap -T4 -p- -A $hostname\n" > $hostname/nmapTCPscan.txt
                 nmap -T4 -p- -A $hostname >> $hostname/nmapTCPscan.txt
         fi
-        #if [ -f "$hostname/testssh.txt" ]
-        #then
-#               echo "testssh was already performed! Skipping testssh check"
-        #       .
-        #fi
         if [ -f "$hostname/whatweb.txt" ]
         then
                 echo "WhatWeb was already performed! Skipping WhatWeb scan"
@@ -54,6 +49,13 @@ else
 		echo -e "Command: wafw00f https://$hostname\n" > $hostname/wafw00fs.txt
                 wafw00f https://$hostname >> $hostname/wafw00fs.txt
         fi
+		if [ -f "$hostname/testssh.txt" ]
+	then
+		echo "testssl check already performed! Skipping testssl check"
+	else echo -e "Running testssl scan on ${RED}$hostname${WHITE}"
+		echo -e "testssl --csv --log $hostname:443\n" > $hostname/testssh.txt
+		testssl --csv --log $hostname:443 >> $hostname/testssh.txt
+	fi
         if [ -f "$hostname/lbd.txt" ]
         then
                 echo "LBD was already performed! Skipping LBD load balancer check"
