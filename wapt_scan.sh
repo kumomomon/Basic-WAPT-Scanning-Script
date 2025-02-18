@@ -24,8 +24,8 @@ else
         then
                 echo "Nmap TCP scan was already performed! Skipping Nmap TCP scan"
         else echo -e "Running TCP Nmap scan on ${RED}$hostname${WHITE}"
-		echo -e "Command: nmap -T4 -p- -A $hostname\n" > $hostname/nmapTCPscan.txt
-                nmap -T4 -p- -A $hostname >> $hostname/nmapTCPscan.txt
+		echo -e "Command: nmap -p- -A -sV -oA $hostname\n"
+                nmap -p- -A -sV $hostname -oA nmap
         fi
         if [ -f "$hostname/whatweb.txt" ]
         then
@@ -53,8 +53,7 @@ else
 	then
 		echo "testssl check already performed! Skipping testssl check"
 	else echo -e "Running testssl scan on ${RED}$hostname${WHITE}"
-		echo -e "testssl --csv --log $hostname:443\n" > $hostname/testssh.txt
-		testssl --csv --log $hostname:443 >> $hostname/testssh.txt
+		testssl --csv --log $hostname:443
 	fi
         if [ -f "$hostname/lbd.txt" ]
         then
@@ -62,6 +61,18 @@ else
         else echo -e "Running LBD on ${RED}$hostname${WHITE}"
 		echo -e "Command: lbd $hostname\n" > $hostname/lbd.txt
                 lbd $hostname >> $hostname/lbd.txt
+        fi
+	if [ -f "$hostname/katana.txt" ]
+        then
+                echo "Katana was already performed! Skipping crawling with Katana"
+        else echo -e "Running Katana on ${RED}$hostname${WHITE}"
+                katana -u $hostname -kf -d 5 -rd 1 -c 5 -o katana
+        fi
+	if [ -f "$hostname/results.json" ]
+        then
+                echo "ReconSpider was already performed! Skipping crawling with ReconSpider"
+        else echo -e "Running ReconSpider on ${RED}$hostname${WHITE}"
+                python3 /opt/ReconSpider.py -u $hostname
         fi
         if [ -f "$hostname/nikto.txt" ]
         then
